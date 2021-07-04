@@ -37,22 +37,15 @@ import com.materialstudies.reply.ui.compose.ComposeFragmentDirections
 import com.materialstudies.reply.ui.email.EmailFragmentArgs
 import com.materialstudies.reply.ui.home.HomeFragmentDirections
 import com.materialstudies.reply.ui.home.Mailbox
-import com.materialstudies.reply.ui.nav.AlphaSlideAction
-import com.materialstudies.reply.ui.nav.BottomNavDrawerFragment
-import com.materialstudies.reply.ui.nav.ChangeSettingsMenuStateAction
-import com.materialstudies.reply.ui.nav.HalfClockwiseRotateSlideAction
-import com.materialstudies.reply.ui.nav.HalfCounterClockwiseRotateSlideAction
-import com.materialstudies.reply.ui.nav.NavigationAdapter
-import com.materialstudies.reply.ui.nav.NavigationModelItem
-import com.materialstudies.reply.ui.nav.ShowHideFabStateAction
+import com.materialstudies.reply.ui.nav.*
 import com.materialstudies.reply.ui.search.SearchFragmentDirections
 import com.materialstudies.reply.util.contentView
 import kotlin.LazyThreadSafetyMode.NONE
 
 class MainActivity : AppCompatActivity(),
-                     Toolbar.OnMenuItemClickListener,
-                     NavController.OnDestinationChangedListener,
-                     NavigationAdapter.NavigationAdapterListener {
+    Toolbar.OnMenuItemClickListener,
+    NavController.OnDestinationChangedListener,
+    NavigationAdapter.NavigationAdapterListener {
 
     private val binding: ActivityMainBinding by contentView(R.layout.activity_main)
     private val bottomNavDrawer: BottomNavDrawerFragment by lazy(NONE) {
@@ -65,9 +58,9 @@ class MainActivity : AppCompatActivity(),
 
     val currentNavigationFragment: Fragment?
         get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-                ?.childFragmentManager
-                ?.fragments
-                ?.first()
+            ?.childFragmentManager
+            ?.fragments
+            ?.first()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,11 +92,13 @@ class MainActivity : AppCompatActivity(),
             addOnStateChangedAction(ChangeSettingsMenuStateAction { showSettings ->
                 // Toggle between the current destination's BAB menu and the menu which should
                 // be displayed when the BottomNavigationDrawer is open.
-                binding.bottomAppBar.replaceMenu(if (showSettings) {
-                    R.menu.bottom_app_bar_settings_menu
-                } else {
-                    getBottomAppBarMenuForDestination()
-                })
+                binding.bottomAppBar.replaceMenu(
+                    if (showSettings) {
+                        R.menu.bottom_app_bar_settings_menu
+                    } else {
+                        getBottomAppBarMenuForDestination()
+                    }
+                )
             })
 
             addOnSandwichSlideAction(HalfCounterClockwiseRotateSlideAction(binding.bottomAppBarChevron))
@@ -220,6 +215,7 @@ class MainActivity : AppCompatActivity(),
                     bottomAppBar.visibility = View.GONE
                     fab.visibility = View.INVISIBLE
                 }
+
                 override fun onAnimationCancel(animation: Animator?) {
                     isCanceled = true
                 }
@@ -256,8 +252,8 @@ class MainActivity : AppCompatActivity(),
 
     private fun showDarkThemeMenu() {
         MenuBottomSheetDialogFragment
-          .newInstance(R.menu.dark_theme_bottom_sheet_menu)
-          .show(supportFragmentManager, null)
+            .newInstance(R.menu.dark_theme_bottom_sheet_menu)
+            .show(supportFragmentManager, null)
     }
 
     fun navigateToHome(@StringRes titleRes: Int, mailbox: Mailbox) {
